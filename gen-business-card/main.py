@@ -97,12 +97,13 @@ dir_path = f"{os.path.dirname(os.path.realpath(__file__))}/../asserts/"
 
 def get_image_paths():
     images = []
-    scale = .5
-    for filename in os.listdir(dir_path):
-        file_path = os.path.join(dir_path, filename)
+    dir_image_path = dir_path + "/company_logo"
+    for filename in os.listdir(dir_image_path):
+        file_path = os.path.join(dir_image_path, filename)
         print(file_path)
         if os.path.isfile(file_path):
             images.append(file_path)
+    return images
 
 if __name__ == "__main__":
     images = get_image_paths()
