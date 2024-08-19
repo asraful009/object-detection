@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 from faker import Faker
 
 class PersonInfo:
-    def __init__(self, image = "", locale = "en_US"):
+    def __init__(self, asserts_path, image="", locale="en_US"):
         self.__faker = Faker([locale])
         self.company = self.__faker.company()
         self.domain = self.__faker.domain_name()
@@ -14,21 +14,32 @@ class PersonInfo:
         self.email = self.__faker.email(True, self.domain)
         self.phone = self.__faker.phone_number()
         self.position = self.__faker.job()
-        self.company_email = self.__faker.company_email(True, self.domain)
+        self.company_email = self.__faker.email(True, self.domain)
         self.address = self.__faker.address()
         self.logo_path = image
-    
-    def __str__(self):
-        return f""" "company": "{self.company}" \n 
-            "domain": self.domain + "\n" + 
-            self.name + "\n" + 
-            self.email + "\n" + 
-            self.phone + "\n" + 
-            self.position + "\n" + 
-            self.company_email + "\n" + 
-            self.address + "\n" + 
-            self.logo_path + "\n" + 
-            """
+        self.fonts = {}
+        if locale == "en_BN":
+            self.fonts["bold"] = f"{asserts_path}/fonts/bangla/AnekBangla-Bold.ttf"
+            self.fonts["regular"] = f"{asserts_path}/fonts/bangla/AnekBangla-Regular.ttf"
+            self.fonts["light"] = f"{asserts_path}/fonts/bangla/AnekBangla-light.ttf"
+        else:
+            self.fonts["bold"] = f"{asserts_path}/fonts/english/JetBrainsMono-Bold.ttf"
+            self.fonts["regular"] = f"{asserts_path}/fonts/english/JetBrainsMono-Regular.ttf"
+            self.fonts["light"] = f"{asserts_path}/fonts/english/JetBrainsMono-light.ttf"
+
+    def to_dict(self):
+        return {
+            "company": self.company,
+            "domain": self.domain,
+            "name": self.name,
+            "email": self.email,
+            "phone": self.phone,
+            "position": self.position,
+            "company_email": self.company_email,
+            "address": self.address,
+            "logo_path": self.logo_path,
+            "fonts": self.fonts
+        }
 
 class BusinessCardGenerator:
     def __init__(self):
