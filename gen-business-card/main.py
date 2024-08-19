@@ -18,10 +18,12 @@ class PersonInfo:
         self.address = f"{self.__faker.building_number()} {self.__faker.street_name()} {self.__faker.country_code()}, {self.__faker.postcode()}"
         self.logo_path = image
         self.fonts = {}
-        if locale == "en_BN":
-            self.fonts["bold"] = f"{asserts_path}/fonts/bangla/AnekBangla-Bold.ttf"
-            self.fonts["regular"] = f"{asserts_path}/fonts/bangla/AnekBangla-Regular.ttf"
-            self.fonts["light"] = f"{asserts_path}/fonts/bangla/AnekBangla-light.ttf"
+        self.background_color = ["#FFF5E4", "#FFFBE6", "#F7F7F8", "#FFFBE6", "#ECFFE6",
+                                 "#EEF7FF", "#E7FBE6"]
+        if locale == "bn_BD":
+            self.fonts["bold"] = f"{asserts_path}/fonts/bangla/Anek/AnekBangla-Bold.ttf"
+            self.fonts["regular"] = f"{asserts_path}/fonts/bangla/Anek/AnekBangla-Regular.ttf"
+            self.fonts["light"] = f"{asserts_path}/fonts/bangla/Anek/AnekBangla-light.ttf"
         else:
             self.fonts["bold"] = f"{asserts_path}/fonts/english/JetBrainsMono-Bold.ttf"
             self.fonts["regular"] = f"{asserts_path}/fonts/english/JetBrainsMono-Regular.ttf"
@@ -41,14 +43,29 @@ class PersonInfo:
             "fonts": self.fonts
         }
 
+
+
 class BusinessCardGenerator:
     def __init__(self):
         pass
+
     def generate(self, person_info: PersonInfo):
-        pass
+        self.__person_info = person_info
+        rgb = tuple(int(self.__person_info.background_color[random.randint(0, len(self.__person_info.background_color) - 1)].lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
+        self.__image_pil = Image.new('RGB', (320, 180),
+                                     color=rgb)
+        self.__write_text(self.__person_info.name)
+        return self.__image_pil
+
+    def __write_text(self, text, position=(20, 20),font_size=40, text_color=(0, 0, 0)):
+        draw = ImageDraw.Draw(self.__image_pil)
+        print(self.__person_info.fonts["bold"], font_size)
+        font = ImageFont.truetype(self.__person_info.fonts["bold"], font_size)
+        draw.text(position, text, font=font, fill=text_color)
 
     def get_cv2_image(self):
-        pass
+        image_cv = cv2.cvtColor(np.array(self.image_pil), cv2.COLOR_RGB2BGR)
+        return image_cv
 
 
 def write_text(image_pil,
