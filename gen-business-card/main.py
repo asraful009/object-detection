@@ -7,7 +7,7 @@ from faker import Faker
 
 class PersonInfo:
     def __init__(self, asserts_path, image="", locale="en_US"):
-        self.__faker = Faker([locale])
+        self.__faker = Faker(locale)
         self.company = self.__faker.company()
         self.domain = self.__faker.domain_name()
         self.name = self.__faker.name()
@@ -15,7 +15,7 @@ class PersonInfo:
         self.phone = self.__faker.phone_number()
         self.position = self.__faker.job()
         self.company_email = self.__faker.email(True, self.domain)
-        self.address = self.__faker.address()
+        self.address = f"{self.__faker.building_number()} {self.__faker.street_name()} {self.__faker.country_code()}, {self.__faker.postcode()}"
         self.logo_path = image
         self.fonts = {}
         if locale == "en_BN":
