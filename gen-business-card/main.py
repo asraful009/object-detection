@@ -1,111 +1,73 @@
 
-import os
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from faker import Faker
-
-class PersonInfo:
-    def __init__(self, asserts_path, image="", locale="en_US"):
-        self.__faker = Faker(locale)
-        self.company = self.__faker.company()
-        self.domain = self.__faker.domain_name()
-        self.name = self.__faker.name()
-        self.email = self.__faker.email(True, self.domain)
-        self.phone = self.__faker.phone_number()
-        self.position = self.__faker.job()
-        self.company_email = self.__faker.email(True, self.domain)
-        self.address = f"{self.__faker.building_number()} {self.__faker.street_name()} {self.__faker.country_code()}, {self.__faker.postcode()}"
-        self.logo_path = image
-        self.fonts = {}
-        self.background_color = ["#FFF5E4", "#FFFBE6", "#F7F7F8", "#FFFBE6", "#ECFFE6",
-                                 "#EEF7FF", "#E7FBE6"]
-        if locale == "bn_BD":
-            self.fonts["bold"] = f"{asserts_path}/fonts/bangla/Anek/AnekBangla-Bold.ttf"
-            self.fonts["regular"] = f"{asserts_path}/fonts/bangla/Anek/AnekBangla-Regular.ttf"
-            self.fonts["light"] = f"{asserts_path}/fonts/bangla/Anek/AnekBangla-light.ttf"
-        else:
-            self.fonts["bold"] = f"{asserts_path}/fonts/english/JetBrainsMono-Bold.ttf"
-            self.fonts["regular"] = f"{asserts_path}/fonts/english/JetBrainsMono-Regular.ttf"
-            self.fonts["light"] = f"{asserts_path}/fonts/english/JetBrainsMono-light.ttf"
-
-    def to_dict(self):
-        return {
-            "company": self.company,
-            "domain": self.domain,
-            "name": self.name,
-            "email": self.email,
-            "phone": self.phone,
-            "position": self.position,
-            "company_email": self.company_email,
-            "address": self.address,
-            "logo_path": self.logo_path,
-            "fonts": self.fonts
-        }
-
-
-
-class BusinessCardGenerator:
-    def __init__(self):
-        pass
-
-    def generate(self, person_info: PersonInfo):
-        self.__person_info = person_info
-        rgb = tuple(int(self.__person_info.background_color[random.randint(0, len(self.__person_info.background_color) - 1)].lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
-        self.__image_pil = Image.new('RGB', (320, 180),
-                                     color=rgb)
-        self.__write_text(self.__person_info.name)
-        return self.__image_pil
-
-    def __write_text(self, text, position=(20, 20),font_size=40, text_color=(0, 0, 0)):
-        draw = ImageDraw.Draw(self.__image_pil)
-        print(self.__person_info.fonts["bold"], font_size)
-        font = ImageFont.truetype(self.__person_info.fonts["bold"], font_size)
-        draw.text(position, text, font=font, fill=text_color)
-
-    def get_cv2_image(self):
-        image_cv = cv2.cvtColor(np.array(self.image_pil), cv2.COLOR_RGB2BGR)
-        return image_cv
-
+import os
 
 def write_text(image_pil,
                text = "",
                position=(20,20),
-               font_path = "./asserts/fonts/JetBrainsMono-Regular.ttf",
+               font_path = "/home/pavel/.fonts/Caveat-Regular.ttf",
                font_size = 40,
                text_color = (0, 0, 0) ):
     draw = ImageDraw.Draw(image_pil)
-    print(font_path)
     font = ImageFont.truetype(font_path, font_size)
     draw.text(position, text, font=font, fill=text_color)
 
-def main():
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    font_bold_path = f"{dir_path}/../asserts/fonts/bangla/NotoSerifBengali-Bold.ttf"
-    font_regular_path = f"{dir_path}/../asserts/fonts/bangla/NotoSerifBengali-Regular.ttf"
-    font_light_path = f"{dir_path}/../asserts/fonts/bangla/NotoSerifBengali-Light.ttf"
-    print(f"{dir_path}/asserts/fonts/bangla/")
-    image_pil = Image.new('RGB', (320, 180), color='white')
-    write_text(image_pil, text="পার্থক্য", position=(20, 20),
-               font_path=font_light_path,
-               font_size=40,
-               text_color=(0, 0, 0))
+
+# Define the dimensions of the image (height, width)
+ratio = 1.75
+height = 320
+width = int(height * ratio)
+fake = Faker()
+
+def draw_line(image_pil,
+              start_point = (50, 50),
+              end_point = (450, 450),
+              line_color = (255, 0, 0), line_thickness = 5):
+    draw = ImageDraw.Draw(image_pil)
+    draw.line([start_point, end_point], fill=line_color, width=line_thickness)
+
+def draw_image(image_pil, image_to_paste_path, position = (100, 50)):
+    image_to_paste = Image.open(image_to_paste_path)
+    image_pil.paste(image_to_paste, position)
+def create_business_card(image_to_paste_path = '/home/pavel/Pictures/company_logo_archive_/logos/logos/AMTBB.png'):
+    # Create a blank white image using Pillow
+    image_pil = Image.new('RGB', (width, height), color='white')
+    owner_info_pos = (72, 52)
+    write_text(image_pil, text=fake.name(), position= owner_info_pos, font_size=40)
+    write_text(image_pil, text=fake.job(), position=(owner_info_pos[0],owner_info_pos[1]+40), font_size=24)
+    write_text(image_pil, text=fake.email(), position=(owner_info_pos[0],owner_info_pos[1]+60), font_size=20)
+    write_text(image_pil, text=fake.phone_number(), position=(owner_info_pos[0],owner_info_pos[1]+78), font_size=20)
+    draw_line(image_pil, start_point=(0, height-42), end_point=(width, height-42), line_color=(200,0,0), line_thickness=2)
+    write_text(image_pil, text=f"{fake.street_address()}, {fake.city()}, {fake.country()}, {fake.postcode()}",
+               position=(16, height-40,), font_size=20)
+
+    draw_image(image_pil,
+               image_to_paste_path,
+                position = (380, 72))
+    write_text(image_pil, text=f"{fake.company()}",
+               position=(332, 212), font_size=28)
+    write_text(image_pil, text=f"{fake.email()}",
+               position=(332, 232), font_size=20)
+    # Convert the Pillow image to OpenCV format
     image_cv = cv2.cvtColor(np.array(image_pil), cv2.COLOR_RGB2BGR)
-    cv2.imwrite(f'{dir_path}/../images/cards/white_image_{0}.jpg', image_cv)
+    # Optionally, save the white image to a file
+    return image_cv
 
-dir_path = f"{os.path.dirname(os.path.realpath(__file__))}/../asserts/"
-
-def get_image_paths():
-    images = []
-    dir_image_path = dir_path + "/company_logo"
-    for filename in os.listdir(dir_image_path):
-        file_path = os.path.join(dir_image_path, filename)
-        print(file_path)
-        if os.path.isfile(file_path):
+directory_path = '/home/pavel/Pictures/company_logo_archive_/logos/logos/'
+images = []
+scale = .5
+for filename in os.listdir(directory_path):
+    file_path = os.path.join(directory_path, filename)
+    print(file_path)
+    if os.path.isfile(file_path):
             images.append(file_path)
-    return images
+index = 0
+for image in images:
+    bc_im = create_business_card(image)
+    cv2.imwrite(f'images/cards/white_image_{index}.jpg', bc_im)
+    index += 1
+    print(f'images/cards/white_image_{index}.jpg')
 
-if __name__ == "__main__":
-    images = get_image_paths()
-    for 1 in range(10):
-        p = PersonInfo()
