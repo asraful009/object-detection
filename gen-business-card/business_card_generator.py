@@ -38,8 +38,10 @@ class BusinessCardGenerator:
                    position=(16, self.__height - 40,), font_size=20)
 
         self.__draw_image(self.__person_info.logo_path, position=(380, 72))
-        self.__write_text(text=f"{self.__person_info.company}", position=(240, 212), font_size=28)
-        self.__write_text(text=f"{self.__person_info.company_email}", position=(240, 250), font_size=14, font_type="email")
+        self.__write_text(text=f"{self.__person_info.company}", position=(220, 212), font_size=28)
+        self.__write_text(text=f"{self.__person_info.company_email}", position=(220, 250), font_size=14, font_type="email")
+
+        self.__draw_background()
 
         return self
 
@@ -53,6 +55,12 @@ class BusinessCardGenerator:
     def __draw_image(self, image_to_paste_path, position=(100, 50)):
         image_to_paste = Image.open(image_to_paste_path)
         self.__image_pil.paste(image_to_paste, position)
+
+    def __draw_background(self):
+        background_image = Image.open(self.__person_info.background_image)
+        background_image = background_image.resize((self.__width + 42, self.__height + 42))
+        background_image.paste(self.__image_pil, (21, 21))
+        self.__image_pil = background_image
 
     def __write_text(self, text, position=(20, 20),
                      font_size=40, text_color=(0, 0, 0),

@@ -3,7 +3,7 @@ from faker.proxy import Faker
 import random
 
 class PersonInfo:
-    def __init__(self, asserts_path, image="", locale="en_US"):
+    def __init__(self, asserts_path, image="", background_image="", locale="en_US"):
         self.__faker = Faker(locale)
         self.company = self.__faker.company()
         self.domain = self.__faker.domain_name()
@@ -14,6 +14,7 @@ class PersonInfo:
         self.company_email = self.__faker.email(True, self.domain)
         self.address = f"{self.__faker.building_number()} {self.__faker.street_name()} {self.__faker.city()} {self.__faker.country()}, {self.__faker.postcode()}"
         self.logo_path = image
+        self.background_image = background_image
         self.fonts = {}
         self.fonts["email"] = f"{asserts_path}/fonts/JetBrainsMono-Light.ttf"
         background_color = ["#FFF5E4", "#FFFBE6", "#F7F7F8", "#FFFBE6", "#ECFFE6",
