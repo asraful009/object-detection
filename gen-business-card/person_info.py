@@ -12,9 +12,10 @@ class PersonInfo:
         self.phone = self.__faker.phone_number()
         self.position = self.__faker.job()
         self.company_email = self.__faker.email(True, self.domain)
-        self.address = f"{self.__faker.building_number()} {self.__faker.street_name()} {self.__faker.country_code()}, {self.__faker.postcode()}"
+        self.address = f"{self.__faker.building_number()} {self.__faker.street_name()} {self.__faker.country()}, {self.__faker.postcode()}"
         self.logo_path = image
         self.fonts = {}
+        self.fonts["email"] = f"{asserts_path}/fonts/JetBrainsMono-Light.ttf"
         background_color = ["#FFF5E4", "#FFFBE6", "#F7F7F8", "#FFFBE6", "#ECFFE6",
                                  "#EEF7FF", "#E7FBE6"]
         self.background_color = background_color[random.randint(0, len(background_color) - 1)]
@@ -26,7 +27,7 @@ class PersonInfo:
         else:
             self.fonts["bold"] = f"{asserts_path}/fonts/JetBrainsMono-Bold.ttf"
             self.fonts["regular"] = f"{asserts_path}/fonts/JetBrainsMono-Regular.ttf"
-            self.fonts["light"] = f"{asserts_path}/fonts/JetBrainsMono-light.ttf"
+            self.fonts["light"] = f"{asserts_path}/fonts/JetBrainsMono-Light.ttf"
 
     def to_dict(self):
         return {

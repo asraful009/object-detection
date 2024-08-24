@@ -22,16 +22,22 @@ class BusinessCardGenerator:
         print(rgb)
         self.__image_pil = Image.new('RGB', (self.__width, self.__height),
                                      color=rgb)
-        owner_info_pos = (72, 52)
+        owner_info_pos = (48, 52)
         self.__write_text(self.__person_info.name, position=owner_info_pos, font_size=40)
-        self.__write_text(self.__person_info.position, position=(owner_info_pos[0], owner_info_pos[1] + 40), font_size=24)
-        self.__write_text(self.__person_info.email, position=(owner_info_pos[0], owner_info_pos[1] + 60), font_size=20)
-        self.__write_text(self.__person_info.phone, position=(owner_info_pos[0], owner_info_pos[1] + 78),
+        self.__write_text(self.__person_info.position, position=(owner_info_pos[0], owner_info_pos[1] + 45), font_size=24)
+        self.__write_text(self.__person_info.email, position=(owner_info_pos[0], owner_info_pos[1] + 76),
+                          font_size=14, font_type="email")
+        self.__write_text(self.__person_info.phone, position=(owner_info_pos[0], owner_info_pos[1] + 88),
                    font_size=20)
-        self.__draw_line(start_point=(0, self.__height - 42), end_point=(self.__width, self.__height - 42), line_color=(200, 0, 0),
-                  line_thickness=2)
+        self.__draw_line(start_point=(0, self.__height - 42), end_point=(self.__width, self.__height - 42),
+                     line_color=(200, 0, 0),
+                     line_thickness=2)
         self.__write_text(f"{self.__person_info.address}",
                    position=(16, self.__height - 40,), font_size=20)
+
+        self.__draw_image(self.__person_info.logo_path, position=(380, 72))
+        self.__write_text(text=f"{self.__person_info.company}", position=(280, 212), font_size=28)
+        self.__write_text(text=f"{self.__person_info.company_email}", position=(280, 242), font_size=14, font_type="email")
 
         return self
 
@@ -46,10 +52,12 @@ class BusinessCardGenerator:
         image_to_paste = Image.open(image_to_paste_path)
         self.__image_pil.paste(image_to_paste, position)
 
-    def __write_text(self, text, position=(20, 20),font_size=40, text_color=(0, 0, 0)):
+    def __write_text(self, text, position=(20, 20),
+                     font_size=40, text_color=(0, 0, 0),
+                     font_type = "regular"):
         draw = ImageDraw.Draw(self.__image_pil)
-        print(self.__person_info.fonts["bold"], font_size)
-        font = ImageFont.truetype(self.__person_info.fonts["bold"], font_size)
+        # print(font_type, self.__person_info.fonts[font_type])
+        font = ImageFont.truetype(self.__person_info.fonts[font_type], font_size)
         draw.text(position, text, font=font, fill=text_color)
 
     def get_cv2_image(self):
