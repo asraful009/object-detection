@@ -56,18 +56,22 @@ class BusinessCardGenerator:
     def __draw_image(self, image_to_paste_path, position=(100, 50)):
         image_to_paste = Image.open(image_to_paste_path)
         self.__image_pil.paste(image_to_paste, position)
+    def __image_rotation(self, rotation = 0):
+        im = self.__image_pil.rotate(rotation, expand=True, resample=Image.BICUBIC)
+        w, h = im.size
+        im_bg = Image.new("RGBA", (w, h), (0, 0, 0, 0)).convert('RGBA')
+        array1 = np.array(im)
+        array2 = np.array(im_bg)
+        xor_array = np.bitwise_xor(array1, array2)
+        xor_image = Image.fromarray(xor_array, 'RGBA')
+        return xor_image
 
     def __draw_background(self):
         background_image = Image.open(self.__person_info.background_image)
-
-        rotated_image_expanded = self.__image_pil.rotate(random.randint(0, 359),
-                                                         resample=Image.BICUBIC,
-                                                         expand=True)
-        transparent_background = Image.new("RGBA", rotated_image_expanded.size, (0, 0, 0, 0))
-        xor_image = ImageChops.logical_xor(rotated_image_expanded, transparent_background)
-        w, h = transparent_background.size
+        rotated_image_expanded = self.__image_rotation(random.randint(0, 359))
+        w, h = rotated_image_expanded.size
         background_image = background_image.resize((w + 42, h + 42))
-        background_image.paste(transparent_background, (21, 21))
+        background_image.paste(rotated_image_expanded, (21, 21), mask=rotated_image_expanded)
         self.__image_pil = background_image
 
     def __write_text(self, text, position=(20, 20),
