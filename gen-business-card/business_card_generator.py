@@ -1,8 +1,9 @@
-from random import random
 
+
+import random
 import cv2
 import numpy as np
-from PIL import ImageDraw, ImageFont, Image
+from PIL import ImageDraw, ImageFont, Image, ImageChops
 
 from person_info import PersonInfo
 
@@ -22,7 +23,7 @@ class BusinessCardGenerator:
                 int(self.__person_info.background_color.lstrip('#')[i:i+2], 16)
                 for i in (0, 2, 4)))
         print(rgb)
-        self.__image_pil = Image.new('RGB', (self.__width, self.__height),
+        self.__image_pil = Image.new('RGBA', (self.__width, self.__height),
                                      color=rgb)
         owner_info_pos = (48, 52)
         self.__write_text(self.__person_info.name, position=owner_info_pos, font_size=40)
@@ -58,8 +59,15 @@ class BusinessCardGenerator:
 
     def __draw_background(self):
         background_image = Image.open(self.__person_info.background_image)
-        background_image = background_image.resize((self.__width + 42, self.__height + 42))
-        background_image.paste(self.__image_pil, (21, 21))
+
+        rotated_image_expanded = self.__image_pil.rotate(random.randint(0, 359),
+                                                         resample=Image.BICUBIC,
+                                                         expand=True)
+        transparent_background = Image.new("RGBA", rotated_image_expanded.size, (0, 0, 0, 0))
+        xor_image = ImageChops.logical_xor(rotated_image_expanded, transparent_background)
+        w, h = transparent_background.size
+        background_image = background_image.resize((w + 42, h + 42))
+        background_image.paste(transparent_background, (21, 21))
         self.__image_pil = background_image
 
     def __write_text(self, text, position=(20, 20),
