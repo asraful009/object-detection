@@ -18,9 +18,9 @@ def get_image_paths():
 
 def main():
     images = get_image_paths()
-    bc_gen = BusinessCardGenerator()
+    bc_gen = BusinessCardGenerator(320)
     for image in images:
-        p = PersonInfo(dir_path, f"{image}")
+        p = PersonInfo(dir_path, f"{image}", "bn_BD")
         print(json.dumps(p.to_dict()))
         cv_image = bc_gen.generate(p).get_cv2_image()
         cv2.imshow("image", cv_image)
