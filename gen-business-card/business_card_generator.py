@@ -70,7 +70,9 @@ class BusinessCardGenerator:
         background_image = Image.open(self.__person_info.background_image)
         rotated_image_expanded = self.__image_rotation(random.randint(0, 359))
         w, h = rotated_image_expanded.size
-        background_image = background_image.resize((w + 42, h + 42))
+        bw, bh = background_image.size
+        bw, bh = random.randint(0, bw - w -42), random.randint(0, bh - h - 42)
+        background_image = background_image.crop((bw, bh, bw + w+ 42, bh + h + 42))
         background_image.paste(rotated_image_expanded, (21, 21), mask=rotated_image_expanded)
         self.__image_pil = background_image
 
