@@ -11,6 +11,8 @@ class BusinessCardGenerator:
         self.__ratio = 1.75
         self.__height = height
         self.__width = int(height * self.__ratio)
+        self.__person_info = None
+        self.__image_pil = None
 
 
     def generate(self, person_info: PersonInfo)-> "BusinessCardGenerator":
@@ -27,8 +29,8 @@ class BusinessCardGenerator:
         self.__write_text(self.__person_info.position, position=(owner_info_pos[0], owner_info_pos[1] + 45), font_size=24)
         self.__write_text(self.__person_info.email, position=(owner_info_pos[0], owner_info_pos[1] + 76),
                           font_size=14, font_type="email")
-        self.__write_text(self.__person_info.phone, position=(owner_info_pos[0], owner_info_pos[1] + 88),
-                   font_size=20)
+        self.__write_text(self.__person_info.phone, position=(owner_info_pos[0], owner_info_pos[1] + 92),
+                   font_size=16)
         self.__draw_line(start_point=(0, self.__height - 42), end_point=(self.__width, self.__height - 42),
                      line_color=(200, 0, 0),
                      line_thickness=2)
@@ -36,8 +38,8 @@ class BusinessCardGenerator:
                    position=(16, self.__height - 40,), font_size=20)
 
         self.__draw_image(self.__person_info.logo_path, position=(380, 72))
-        self.__write_text(text=f"{self.__person_info.company}", position=(280, 212), font_size=28)
-        self.__write_text(text=f"{self.__person_info.company_email}", position=(280, 242), font_size=14, font_type="email")
+        self.__write_text(text=f"{self.__person_info.company}", position=(240, 212), font_size=28)
+        self.__write_text(text=f"{self.__person_info.company_email}", position=(240, 250), font_size=14, font_type="email")
 
         return self
 

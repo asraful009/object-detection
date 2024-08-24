@@ -12,7 +12,7 @@ class PersonInfo:
         self.phone = self.__faker.phone_number()
         self.position = self.__faker.job()
         self.company_email = self.__faker.email(True, self.domain)
-        self.address = f"{self.__faker.building_number()} {self.__faker.street_name()} {self.__faker.country()}, {self.__faker.postcode()}"
+        self.address = f"{self.__faker.building_number()} {self.__faker.street_name()} {self.__faker.city()} {self.__faker.country()}, {self.__faker.postcode()}"
         self.logo_path = image
         self.fonts = {}
         self.fonts["email"] = f"{asserts_path}/fonts/JetBrainsMono-Light.ttf"
