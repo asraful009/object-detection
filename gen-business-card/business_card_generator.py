@@ -71,9 +71,11 @@ class BusinessCardGenerator:
         rotated_image_expanded = self.__image_rotation(random.randint(0, 359))
         w, h = rotated_image_expanded.size
         bw, bh = background_image.size
-        bw, bh = random.randint(0, bw - w -42), random.randint(0, bh - h - 42)
-        background_image = background_image.crop((bw, bh, bw + w+ 42, bh + h + 42))
-        background_image.paste(rotated_image_expanded, (21, 21), mask=rotated_image_expanded)
+        # bw, bh = random.randint(0, bw - w -42), random.randint(0, bh - h - 42)
+        bw, bh = random.randint(0, bw - w -640), random.randint(0, bh - h - 640)
+        background_image = background_image.crop((bw, bh, bw + 640, bh +640))
+        background_image.paste(rotated_image_expanded, (0, 0), mask=rotated_image_expanded)
+
         self.__image_pil = background_image
 
     def __write_text(self, text, position=(20, 20),
