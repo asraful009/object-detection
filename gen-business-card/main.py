@@ -22,6 +22,7 @@ def main():
     bg_images  = get_image_paths(dir_path + "/background_images")
     bc_gen = BusinessCardGenerator(320)
     index = 0
+    file1 = open("train_1.txt", "a+")
     for image in images:
         p = PersonInfo(dir_path,
                        f"{image}",
@@ -35,7 +36,11 @@ def main():
         # cv2.imshow("image", cv_image)
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
-        exit(0)
+        file1.write(f"0 0.5 0.5 1.0 1.0\n")
+        # exit(0)
+        if index > 1000:
+            break
+    file1.close()
 
 if __name__ == "__main__":
     main()
