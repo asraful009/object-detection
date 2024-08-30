@@ -68,13 +68,16 @@ class BusinessCardGenerator:
 
     def __draw_background(self):
         background_image = Image.open(self.__person_info.background_image)
-        rotated_image_expanded = self.__image_rotation(random.randint(0, 359))
+        rotation_val = random.randint(0, 359)
+        print(rotation_val)
+        rotated_image_expanded = self.__image_rotation(rotation_val)
         w, h = rotated_image_expanded.size
-        bw, bh = background_image.size
-        # bw, bh = random.randint(0, bw - w -42), random.randint(0, bh - h - 42)
+        bw, bh = background_image.sizen
         bw, bh = random.randint(0, bw - w -640), random.randint(0, bh - h - 640)
         background_image = background_image.crop((bw, bh, bw + 640, bh +640))
-        background_image.paste(rotated_image_expanded, (0, 0), mask=rotated_image_expanded)
+        background_image.paste(rotated_image_expanded,
+                               ((320 - int(w/2)), (320 - int(h/2))),
+                                mask=rotated_image_expanded)
 
         self.__image_pil = background_image
 
