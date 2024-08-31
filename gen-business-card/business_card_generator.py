@@ -22,7 +22,7 @@ class BusinessCardGenerator:
             tuple(
                 int(self.__person_info.background_color.lstrip('#')[i:i+2], 16)
                 for i in (0, 2, 4)))
-        print(rgb)
+        # print(rgb)
         self.__image_pil = Image.new('RGBA', (self.__width, self.__height),
                                      color=rgb)
         owner_info_pos = (48, 52)
@@ -69,17 +69,21 @@ class BusinessCardGenerator:
     def __draw_background(self):
         background_image = Image.open(self.__person_info.background_image)
         rotation_val = random.randint(0, 359)
-        print(rotation_val)
+        # print(rotation_val)
         rotated_image_expanded = self.__image_rotation(rotation_val)
         w, h = rotated_image_expanded.size
         bw, bh = background_image.size
         bw, bh = random.randint(0, bw - w -640), random.randint(0, bh - h - 640)
         background_image = background_image.crop((bw, bh, bw + 640, bh +640))
+        pl, pt = (320 - int(w / 2)), (320 - int(h / 2))
         background_image.paste(rotated_image_expanded,
-                               ((320 - int(w/2)), (320 - int(h/2))),
+                               (pl, pt),
                                 mask=rotated_image_expanded)
 
         self.__image_pil = background_image
+        # print(f"({pl}, {pt}) ({w}, {h})")
+        draw = ImageDraw.Draw(self.__image_pil)
+        draw.rectangle([(pl, pt), (pl+w, pt+h)], outline=(100, 100, 100), width=5)
 
     def __write_text(self, text, position=(20, 20),
                      font_size=40, text_color=(0, 0, 0),

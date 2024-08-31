@@ -22,25 +22,24 @@ def main():
     bg_images  = get_image_paths(dir_path + "/background_images")
     bc_gen = BusinessCardGenerator(320)
     index = 0
-    file1 = open("train_1.txt", "a+")
     for image in images:
         p = PersonInfo(dir_path,
                        f"{image}",
                        f"{bg_images[random.randint(0, len(bg_images) - 1)]}",
                        "bn_BD")
-        print(json.dumps(p.to_dict()))
+        # print(json.dumps(p.to_dict()))
         cv_image = bc_gen.generate(p).get_cv2_image()
         id = uuid.uuid4()
-        cv2.imwrite(f"{dir_path}/business_cards/{index}.jpg", cv_image)
+        cv2.imwrite(f"{dir_path}/dataset/images/train/{index}.jpg", cv_image)
         index += 1
         # cv2.imshow("image", cv_image)
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
-        file1.write(f"0 0.5 0.5 1.0 1.0\n")
+
         # exit(0)
-        if index > 1000:
+        if index > 0:
             break
-    file1.close()
+
 
 if __name__ == "__main__":
     main()
