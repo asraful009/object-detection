@@ -24,7 +24,7 @@ def main():
     index = 0
     total = 600
     rotation_size = 23
-    data_set_mode = "train"
+    data_set_mode = "val"
     with tqdm(total=total*rotation_size, unit='Img', unit_scale=True, desc=f"Images Generated [{data_set_mode}]") as pbar:
         # for image in images:
         while index < total:

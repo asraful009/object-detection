@@ -162,4 +162,4 @@ cython_debug/
 .idea/
 
 asserts/
-train_model/
+train_model/runs/

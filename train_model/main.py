@@ -7,8 +7,8 @@ dir_path = f"{os.path.dirname(os.path.realpath(__file__))}/../asserts"
 
 def main():
     model = YOLO('yolov8n.pt')
-    model.train(data=f'{dir_path}/dataset/dataset.yaml', epochs=1, imgsz=640, batch=1)
-
+    model.train(data=f'{dir_path}/dataset/dataset.yaml', epochs=1, imgsz=640, batch=100, device="cuda")
+    model.save(f'{dir_path}/dataset/custom_model.pt')
     # Load the image where you want to detect objects
     image_path = f'{dir_path}/dataset/images/train/1.jpg'  # Replace with the path to your image
     image = cv2.imread(image_path)
