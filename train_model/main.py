@@ -1,4 +1,4 @@
-
+from torch.xpu import device
 from ultralytics import YOLO
 import os
 import cv2

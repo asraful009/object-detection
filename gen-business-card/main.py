@@ -22,10 +22,10 @@ def main():
     bg_images  = get_image_paths(dir_path + "/background_images")
     bc_gen = BusinessCardGenerator(320)
     index = 0
-    total = 600
-    rotation_size = 23
-    data_set_mode = "val"
-    with tqdm(total=total*rotation_size, unit='Img', unit_scale=True, desc=f"Images Generated [{data_set_mode}]") as pbar:
+    total = 1
+    rotation_size = 10
+    data_set_mode = "train"
+    with tqdm(total=total*rotation_size, unit='Img', ncols=100,unit_scale=True, desc=f"Images Generated [{data_set_mode}]") as pbar:
         # for image in images:
         while index < total:
             rotations = np.random.randint(0, 359, size=rotation_size)
@@ -40,6 +40,7 @@ def main():
                 cv_image = bc_gen.get_cv2_image()
                 card_location = bc_gen.get_card_location()
                 w, h = card_location[1][0]/640, card_location[1][1]/640
+                w, h = min(1, max(0, w)), min(1, max(0, h))
                 cv2.imwrite(f"{dir_path}/dataset/images/{data_set_mode}/{ix_str}.jpg", cv_image)
                 with open(f'{dir_path}/dataset/labels/{data_set_mode}/{ix_str}.txt', 'w') as file:
                     file.write(f"0 0.5 0.5 {w} {h}")
