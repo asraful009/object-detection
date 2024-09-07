@@ -5,13 +5,20 @@ import cv2
 
 dir_path = f"{os.path.dirname(os.path.realpath(__file__))}/../asserts"
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+torch.cuda.empty_cache()
 def main():
     if not os.path.exists(f'{dir_path}/dataset/custom_model.pt'):
         model_train = YOLO('yolov8x.pt')
-        model_train.train(data=f'{dir_path}/dataset/dataset.yaml', epochs=1, imgsz=640, batch=10,
-        device=device, pretrained=True)
-        model_train.save(f'{dir_path}/dataset/custom_model.pt')
-    model = YOLO(f'{dir_path}/dataset/custom_model.pt')
+        itaration = 4
+        while itaration >= 0:
+            torch.cuda.empty_cache()
+            model_train.train(data=f'{dir_path}/dataset/dataset.yaml', epochs=1, imgsz=640,
+                              batch=4, half=True,
+                              device=device, pretrained=True)
+            model_train.save(f'{dir_path}/dataset/custom_model_{itaration}.pt')
+            itaration = itaration - 1
+
+    model = YOLO(f'{dir_path}/dataset/custom_model_0.pt')
     # Load the image where you want to detect objects
     image_path = f'{dir_path}/dataset/images/val/0_22.jpg'  # Replace with the path to your image
     image = cv2.imread(image_path)
