@@ -22,9 +22,9 @@ def main():
     bg_images  = get_image_paths(dir_path + "/background_images")
     bc_gen = BusinessCardGenerator(320)
     index = 0
-    total = 1
-    rotation_size = 10
-    data_set_mode = "val"
+    total = 100
+    rotation_size = 23
+    data_set_mode = "train"
     with tqdm(total=total*rotation_size, unit='Img', ncols=100,unit_scale=True, desc=f"Images Generated [{data_set_mode}]") as pbar:
         # for image in images:
         while index < total:
