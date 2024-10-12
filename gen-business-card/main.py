@@ -43,7 +43,7 @@ def main():
                 w, h = min(1, max(0, w)), min(1, max(0, h))
                 cv2.imwrite(f"{dir_path}/dataset/images/{data_set_mode}/{ix_str}.jpg", cv_image)
                 with open(f'{dir_path}/dataset/labels/{data_set_mode}/{ix_str}.txt', 'w') as file:
-                    file.write(f"0 0.5 0.5 {w} {h}")
+                    file.write(f"80 0.5 0.5 {w} {h}")
                 # cv2.imshow("image", cv_image)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()

@@ -22,48 +22,54 @@ def get_image_paths(dir_image_path):
     return images
 
 def main():
-    if not os.path.exists(f'{dir_path}/dataset/custom_model_0.pt'):
-        model_train = YOLO(f'{dir_path}/dataset/custom_model_0.pt')
-        # print(model_train)
-        # exit(0)
-        itaration = 0
+
+    if not os.path.exists(f'{dir_path}/dataset/custom_model_v3_0.pt') or True:
+
+        model_train = YOLO(f'{dir_path}/dataset/custom_model_v3_0.pt')
+        # model_train = YOLO("yolov8n.pt").load(f'yolov8n.pt')
+        print(model_train.names)
+        itaration = 1
         while itaration >= 0:
             torch.cuda.empty_cache()
             model_train.train(data=f'{dir_path}/dataset/dataset.yaml', epochs=1, imgsz=640,
-                              batch=2, half=True,
+                              batch=8, half=True,
                               device=device, pretrained=True)
-            model_train.save(f'{dir_path}/dataset/custom_model_{itaration}.pt')
+            model_train.save(f'{dir_path}/dataset/custom_model_v3_{itaration}.pt')
+            print(model_train.names)
             itaration = itaration - 1
 
-    model = YOLO(f'{dir_path}/dataset/custom_model_0.pt')
+    model = YOLO(f'{dir_path}/dataset/custom_model_v3_0.pt')
+    # model = YOLO('yolov8n.pt')
+    print(model.names)  # Print the model.names
     # Load the image where you want to detect objects
     images = get_image_paths(f'{dir_path}/test_images')
-    image = cv2.imread(f'{images[np.random.randint(0, len(images))]}')
+    for image_path in images:
+        image = cv2.imread(f'{image_path}')
 
-    # Perform object detection
-    results = model.predict(image)
-    # print(results[0].boxes)
-    # Visualize the results
-    for result in results:
-        for box in result.boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])  # Get bounding box coordinates
-            class_id = int(box.cls[0])
-            label = ''
-            if hasattr(result, 'names') and class_id in result.names:
-                label = result.names[class_id]  # Get the label/class name
-            else:
-                label = f"Class {class_id}"  # Use default class ID if no label found
+        # Perform object detection
+        results = model.predict(image)
+        # print(results[0].boxes)
+        # Visualize the results
+        for result in results:
+            for box in result.boxes:
+                x1, y1, x2, y2 = map(int, box.xyxy[0])  # Get bounding box coordinates
+                class_id = int(box.cls[0])
+                label = ''
+                if hasattr(result, 'names') and class_id in result.names:
+                    label = result.names[class_id]  # Get the label/class name
+                else:
+                    label = f"Class {class_id}"  # Use default class ID if no label found
 
-            confidence = box.conf[0].item()  # Convert tensor to float for confidence score
+                confidence = box.conf[0].item()  # Convert tensor to float for confidence score
 
-            # Draw the bounding box on the image
-            cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 1)
-            text = f'{label} ({confidence:.2f})'
-            cv2.putText(image, text, (x1, y1 - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, .5, (0, 255, 0), 1)
+                # Draw the bounding box on the image
+                cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                text = f'{label} ({confidence:.2f})'
+                cv2.putText(image, text, (x1, y1 + 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, .5, (0, 255, 0), 1)
 
-    # Display the image with detected objects
-    cv2.imshow('YOLOv8 Object Detection', image)
+        # Display the image with detected objects
+        cv2.imshow(f'{image_path}', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
